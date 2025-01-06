@@ -5,10 +5,9 @@ on:
       - main
   pull_request: {}
 
-permissions:
-  contents: read
-  # Optional: allow read access to pull request. Use with `only-new-issues` option.
-  # pull-requests: read
+defaults:
+  run:
+    working-directory: ./govulncheck-action/apps1
 
 jobs:
   vulcheck_1:
