@@ -38,8 +38,8 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-        sparse-checkout: |
-          govulncheck-action/app1
+          sparse-checkout: |
+            govulncheck-action/app1
       - run: mv ./govulncheck-action/app1/* ./../../ # we move it to make it work.
       - run: ls -la
       - name: Scan for Vulnerabilities in Code
