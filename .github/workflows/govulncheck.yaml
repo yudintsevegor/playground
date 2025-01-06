@@ -15,7 +15,7 @@ jobs:
           sparse-checkout: |
             govulncheck-action/app1
       - name: Scan for Vulnerabilities in Code
-        uses: Templum/govulncheck-action@feature-add-github-workdir-input-param
+        uses: Templum/govulncheck-action@1934c7d061220d2d812adb75349d36ce6af4fa82
         with:
           working-directory: /govulncheck-action/app1
           go-version: 1.23.1
@@ -28,7 +28,7 @@ jobs:
           sparse-checkout: |
             govulncheck-action/app1
       - name: Scan for Vulnerabilities in Code
-        uses: Templum/govulncheck-action@feature-add-github-workdir-input-param
+        uses: Templum/govulncheck-action@1934c7d061220d2d812adb75349d36ce6af4fa82
         with:
           working-directory: ./govulncheck-action/app1
           go-version: 1.23.1
@@ -40,6 +40,6 @@ jobs:
       - run: mv govulncheck-action/app1/* ./
       - run: ls -la
       - name: Scan for Vulnerabilities in Code
-        uses: Templum/govulncheck-action@feature-add-github-workdir-input-param
+        uses: Templum/govulncheck-action@1934c7d061220d2d812adb75349d36ce6af4fa82
         with:
           go-version: 1.23.1
