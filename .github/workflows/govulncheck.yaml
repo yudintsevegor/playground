@@ -20,7 +20,7 @@ jobs:
           sparse-checkout: |
             apps1
       - name: Scan for Vulnerabilities in Code
-        uses: Templum/govulncheck-action@f7b0e70a5980777cd18c862acb40360893dfbb54
+        uses: Templum/govulncheck-action@1b919da97eb524a21cbe711cf845c2189bea0d71
         with:
           working-directory: /govulncheck-action/apps1
   vulcheck_2:
@@ -32,7 +32,7 @@ jobs:
           sparse-checkout: |
             apps1
       - name: Scan for Vulnerabilities in Code
-        uses: Templum/govulncheck-action@f7b0e70a5980777cd18c862acb40360893dfbb54
+        uses: Templum/govulncheck-action@1b919da97eb524a21cbe711cf845c2189bea0d71
         with:
           working-directory: ./govulncheck-action/apps1
   vulcheck_3:
@@ -40,6 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - run: mv ./govulncheck-action/apps1/* ./../../ # we move it to make it work.
+      - run: la -la
+      # - run: mv ./govulncheck-action/apps1/* ./../../ # we move it to make it work.
       - name: Scan for Vulnerabilities in Code
         uses: Templum/govulncheck-action@f7b0e70a5980777cd18c862acb40360893dfbb54
