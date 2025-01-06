@@ -13,11 +13,11 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           sparse-checkout: |
-            govulncheck-action/apps1
+            govulncheck-action/app1
       - name: Scan for Vulnerabilities in Code
         uses: Templum/govulncheck-action@6d21ed80c0b3cdde509274f5a06f82beb48acbc4
         with:
-          working-directory: /govulncheck-action/apps1
+          working-directory: /govulncheck-action/app1
   vulcheck_2:
     name: checks working-directory provided with `./*`
     runs-on: ubuntu-latest
@@ -25,11 +25,11 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           sparse-checkout: |
-            govulncheck-action/apps1
+            govulncheck-action/app1
       - name: Scan for Vulnerabilities in Code
         uses: yudintsevegor/govulncheck-action@6d21ed80c0b3cdde509274f5a06f82beb48acbc4
         with:
-          working-directory: ./govulncheck-action/apps1
+          working-directory: ./govulncheck-action/app1
   vulcheck_3:
     name: checks with empty working-directory (should use default)
     runs-on: ubuntu-latest
