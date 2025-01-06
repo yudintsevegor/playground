@@ -1,0 +1,48 @@
+name: golangci-lint
+on:
+  push:
+    branches:
+      - main
+  pull_request: {}
+
+permissions:
+  contents: read
+  # Optional: allow read access to pull request. Use with `only-new-issues` option.
+  # pull-requests: read
+
+jobs:
+  vulcheck_1:
+    name: checks working-directory provided with `/*`
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          sparse-checkout: |
+            apps1
+      - name: Scan for Vulnerabilities in Code
+        uses: Templum/govulncheck-action@ed509929c2716961d6c2c8b3a0d222c2c7987518
+        with:
+          working-directory: /apps1
+  vulcheck_2:
+    name: checks working-directory provided with `./*`
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          sparse-checkout: |
+            apps1
+      - name: Scan for Vulnerabilities in Code
+        uses: Templum/govulncheck-action@ed509929c2716961d6c2c8b3a0d222c2c7987518
+        with:
+          working-directory: ./apps1
+  vulcheck_3:
+  name: checks with empty working-directory (should use default)
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      with:
+        sparse-checkout: |
+          apps1
+    - run: mv ./app1/* ./ # we move it to make it work.
+    - name: Scan for Vulnerabilities in Code
+      uses: Templum/govulncheck-action@ed509929c2716961d6c2c8b3a0d222c2c7987518
