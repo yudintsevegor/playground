@@ -1,4 +1,4 @@
-name: golangci-lint
+name: e2e-Templum/govulncheck-action
 on:
   push:
     branches:
