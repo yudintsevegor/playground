@@ -15,7 +15,7 @@ jobs:
           sparse-checkout: |
             govulncheck-action/apps1
       - name: Scan for Vulnerabilities in Code
-        uses: Templum/govulncheck-action@3a825c8e950e0747d33b5dc8186e2a664bed0f9d
+        uses: Templum/govulncheck-action@6d21ed80c0b3cdde509274f5a06f82beb48acbc4
         with:
           working-directory: /govulncheck-action/apps1
   vulcheck_2:
@@ -27,7 +27,7 @@ jobs:
           sparse-checkout: |
             govulncheck-action/apps1
       - name: Scan for Vulnerabilities in Code
-        uses: yudintsevegor/govulncheck-action@3a825c8e950e0747d33b5dc8186e2a664bed0f9d
+        uses: yudintsevegor/govulncheck-action@6d21ed80c0b3cdde509274f5a06f82beb48acbc4
         with:
           working-directory: ./govulncheck-action/apps1
   vulcheck_3:
