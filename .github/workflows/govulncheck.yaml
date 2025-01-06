@@ -43,7 +43,6 @@ jobs:
         with:
           sparse-checkout: |
             apps1
-      - run: ls -la
-      - run: mv ./* ./../../ # we move it to make it work.
+      - run: mv ./govulncheck-action/apps1/* ./../../ # we move it to make it work.
       - name: Scan for Vulnerabilities in Code
         uses: Templum/govulncheck-action@f7b0e70a5980777cd18c862acb40360893dfbb54
