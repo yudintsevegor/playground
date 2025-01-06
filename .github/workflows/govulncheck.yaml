@@ -32,7 +32,7 @@ jobs:
           sparse-checkout: |
             apps1
       - name: Scan for Vulnerabilities in Code
-        uses: Templum/govulncheck-action@1b919da97eb524a21cbe711cf845c2189bea0d71
+        uses: yudintsevegor/govulncheck-action@1b919da97eb524a21cbe711cf845c2189bea0d71
         with:
           working-directory: ./govulncheck-action/apps1
   vulcheck_3:
