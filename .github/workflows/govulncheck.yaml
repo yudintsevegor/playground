@@ -22,7 +22,7 @@ jobs:
       - name: Scan for Vulnerabilities in Code
         uses: Templum/govulncheck-action@f7b0e70a5980777cd18c862acb40360893dfbb54
         with:
-          working-directory: /apps1
+          working-directory: /govulncheck-action/apps1
   vulcheck_2:
     name: checks working-directory provided with `./*`
     runs-on: ubuntu-latest
@@ -34,7 +34,7 @@ jobs:
       - name: Scan for Vulnerabilities in Code
         uses: Templum/govulncheck-action@f7b0e70a5980777cd18c862acb40360893dfbb54
         with:
-          working-directory: ./apps1
+          working-directory: ./govulncheck-action/apps1
   vulcheck_3:
     name: checks with empty working-directory (should use default)
     runs-on: ubuntu-latest
@@ -43,6 +43,6 @@ jobs:
         with:
           sparse-checkout: |
             apps1
-      - run: mv ./app1/* ./ # we move it to make it work.
+      - run: mv ./govulncheck-action/app1/* ./ # we move it to make it work.
       - name: Scan for Vulnerabilities in Code
         uses: Templum/govulncheck-action@f7b0e70a5980777cd18c862acb40360893dfbb54
