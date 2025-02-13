@@ -18,4 +18,4 @@ jobs:
         with:
           go-version-file: "./yaml_linter/go.mod"
           cache: false
-      - run: go run .
+      - run: cd yaml_linter && go run .
