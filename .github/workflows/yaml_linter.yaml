@@ -5,6 +5,9 @@ on:
       - main
   pull_request: {}
 
+permissions:
+  checks: write
+
 jobs:
   lint:
     name: Lint YAML files
@@ -18,4 +21,10 @@ jobs:
         with:
           go-version-file: "./yaml_linter/go.mod"
           cache: false
-      - run: cd yaml_linter && go run .
+      - run: cd yaml_linter && go run . && mv annotations.json ../annotations.json
+      - name: Annotate
+        uses: yuzutech/annotations-action@v0.4.0
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          title: "lint"
+          input: "./annotations.json"

@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/goccy/go-yaml"
@@ -42,4 +44,45 @@ func f() {
 			fmt.Println(token)
 		}
 	*/
+
+	ann := annotation{
+		File:            "./yaml_linter/definitions/test.yaml",
+		Line:            2,
+		Title:           "Test Annotation",
+		Message:         "It's a test annotation",
+		AnnotationLevel: "sailure", // Can be one of: notice, warning, failure
+	}
+
+	anns := []annotation{ann}
+	body, err := json.Marshal(anns)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	err = os.WriteFile("./annotations.json", body, 0644)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
 }
+
+type annotation struct {
+	File            string `json:"file"`
+	Line            int    `json:"line"`
+	Title           string `json:"title"`
+	Message         string `json:"message"`
+	AnnotationLevel string `json:"annotation_level"`
+}
+
+/*
+[
+  {
+    file: "path/to/file.js",
+    line: 5,
+    title: "title for my annotation",
+    message: "my message",
+    annotation_level: "failure"
+  }
+]
+*/
