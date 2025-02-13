@@ -46,7 +46,7 @@ func f() {
 	*/
 
 	ann := annotation{
-		File:            "./yaml_linter/definitions/test.yaml",
+		File:            "yaml_linter/definitions/test.yaml",
 		Line:            2,
 		Title:           "Test Annotation",
 		Message:         "It's a test annotation",
