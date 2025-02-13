@@ -1,0 +1,12 @@
+type: scientistsset
+name: math_plan
+
+scientists:
+  - landau
+  - feynamn
+  - euler
+  - gauss
+
+ages:
+  feynamn:
+    default: 5

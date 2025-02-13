@@ -1,0 +1,11 @@
+type: scientistsset
+name: physics_plan
+
+scientists:
+  - newton
+  - feynamn
+  - maxwell
+
+ages:
+  feynamn:
+    default: 5
