@@ -50,7 +50,7 @@ func f() {
 		Line:            2,
 		Title:           "Test Annotation",
 		Message:         "It's a test annotation",
-		AnnotationLevel: "sailure", // Can be one of: notice, warning, failure
+		AnnotationLevel: "failure", // Can be one of: notice, warning, failure
 	}
 
 	anns := []annotation{ann}
