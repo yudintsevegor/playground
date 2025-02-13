@@ -28,3 +28,4 @@ jobs:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           title: "lint"
           input: "./annotations.json"
+          ignore-missing-file: false
