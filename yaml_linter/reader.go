@@ -20,10 +20,10 @@ type entitlementsYAML struct {
 	Type       string   `mapstructure:"type"`
 	Name       string   `mapstructure:"name"`
 	Scientists []string `mapstructure:"scientists"`
-	Ages       map[string]struct {
+	Projects   map[string]struct {
 		Default       int            `mapstructure:"default"`
 		RemainingKeys map[string]any `mapstructure:",remain"`
-	} `mapstructure:"ages"`
+	} `mapstructure:"projects"`
 
 	RemainingKeys map[string]any `mapstructure:",remain"`
 }
@@ -107,7 +107,7 @@ func readFeaturesetYAML(r io.Reader) (Scientistsset, error) {
 	}
 
 	// Validate the file format
-	for lf, lc := range defs.Ages {
+	for lf, lc := range defs.Projects {
 		if !slices.Contains(defs.Scientists, lf) {
 			return Scientistsset{}, fmt.Errorf("limit defined for undefined feature %s", lf)
 		}
@@ -132,7 +132,7 @@ func readFeaturesetYAML(r io.Reader) (Scientistsset, error) {
 			Name: scientistName,
 		}
 
-		ageCfg, hasAge := defs.Ages[scientistName]
+		ageCfg, hasAge := defs.Projects[scientistName]
 		if hasAge {
 			scientist.defaultAge = ageCfg.Default
 		}

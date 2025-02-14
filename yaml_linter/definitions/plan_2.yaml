@@ -6,6 +6,6 @@ scientists:
   - feynamn
   - maxwell
 
-ages:
+projects:
   feynamn:
     default: 5

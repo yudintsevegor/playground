@@ -7,6 +7,6 @@ scientists:
   - euler
   - gauss
 
-ages:
+projects:
   feynamn:
     default: 5

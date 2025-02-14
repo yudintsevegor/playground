@@ -1,4 +1,10 @@
 a:
   - 1
   - 2
+  #- 3
+  - 4
 b: "hello"
+
+c:
+  b:
+    default: 5
