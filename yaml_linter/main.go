@@ -12,6 +12,7 @@ import (
 )
 
 func main() {
+	// example()
 	f()
 	return
 	scientists, err := readDefinitionFiles()
@@ -37,7 +38,7 @@ func f() {
 		panic(err)
 	}
 
-	log.Println(v.A)
+	log.Println("CHECKING A")
 	if v.A[2] != 2 {
 		// output error with YAML source
 		path, err := yaml.PathString("$.a[2]")
@@ -58,6 +59,19 @@ func f() {
 		fmt.Printf("a value expected 2 but actual %d:\n%s\n", v.A, string(source))
 	}
 
+	log.Println("PATH DEFAULT")
+	path, err := yaml.PathString("$.c.b.default")
+	if err != nil {
+		panic(err)
+	}
+
+	ast, err := path.ReadNode(bytes.NewReader(file))
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("TYPE", ast.Type())
+	log.Printf("ast: %+v", ast.GetToken().Position.Line)
+
 	/**
 	tokens := lexer.Tokenize(yml)
 	for _, token := range tokens {
@@ -67,7 +81,9 @@ func f() {
 	}
 	/**/
 
-	path, err := yaml.PathString("$.c")
+	/**/
+	log.Println("PATH 'C'")
+	path, err = yaml.PathString("$.c")
 	if err != nil {
 		panic(err)
 	}
@@ -76,12 +92,15 @@ func f() {
 		panic(err)
 	}
 
+	fmt.Println("TYPE", node.Type())
+	fmt.Println("NODE", node.String())
 	tokens := lexer.Tokenize(node.String())
 	for _, token := range tokens {
 		fmt.Printf("%+v\n\n", token)
 		// fmt.Printf("VALUE: %v\n\n", token.Value)
 		fmt.Printf("LINE: %v\n\n", token.Position.Line)
 	}
+	/**/
 
 	if false {
 		makeAnnotation()

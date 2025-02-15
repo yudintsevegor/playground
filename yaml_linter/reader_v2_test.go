@@ -59,8 +59,8 @@ scientists:
 #comment: kek
 projects:
   feynman:
-    default: 2
     unknown: 1
+    default: 2
 `
 
 	invalidDefaultContent = `name: kek 
@@ -70,7 +70,13 @@ scientists:
  - einstein
 #comment: kek
 projects:
+  #maxwell:
+    #someField: 1
+    #default: 0
+  einstein:
+    default: 11
   feynman:
+    #someField: 1
     default: 0
 `
 )
@@ -128,7 +134,7 @@ func Test_Name(t *testing.T) {
 			},
 		},
 		{
-			name:    "unknown project in default",
+			name:    "unknown project",
 			content: unknownInProjectsContent,
 			wantErr: true,
 			lintErrs: []LintError{
@@ -144,7 +150,7 @@ func Test_Name(t *testing.T) {
 			wantErr: true,
 			lintErrs: []LintError{
 				{
-					Line: 10,
+					Line: 9,
 					Err:  fmt.Errorf("unexpected key %s in definitaion", "unknown"),
 				},
 			},
@@ -155,7 +161,7 @@ func Test_Name(t *testing.T) {
 			wantErr: true,
 			lintErrs: []LintError{
 				{
-					Line: 9,
+					Line: 15,
 					Err:  fmt.Errorf("default limit for feature %s must be greater than zero", "feynman"),
 				},
 			},

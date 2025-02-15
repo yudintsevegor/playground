@@ -9,10 +9,10 @@ import (
 	"log"
 	"os"
 	"slices"
-	"strings"
 
 	"github.com/go-viper/mapstructure/v2"
 	"github.com/goccy/go-yaml"
+	"github.com/goccy/go-yaml/ast"
 	"github.com/goccy/go-yaml/lexer"
 	"github.com/goccy/go-yaml/token"
 )
@@ -139,7 +139,7 @@ func readFeaturesetYAMLV2(yamlFile []byte) (Scientistsset, error) {
 	// Validate the file format
 	for scientistsName, keys := range defs.Projects {
 		if !slices.Contains(defs.Scientists, scientistsName) {
-			line, err := findLineInChild(scientistsName, []string{"projects"}, yamlFile)
+			line, err := findLineInChild(fmt.Sprintf("$.projects.%s", scientistsName), yamlFile)
 			if err != nil {
 				return Scientistsset{}, fmt.Errorf("find line in child for key %s: %w", scientistsName, err)
 			}
@@ -154,7 +154,7 @@ func readFeaturesetYAMLV2(yamlFile []byte) (Scientistsset, error) {
 
 		if len(keys.RemainingKeys) > 0 {
 			for key := range keys.RemainingKeys {
-				line, err := findLineInChild(key, []string{"projects"}, yamlFile)
+				line, err := findLineInChild(fmt.Sprintf("$.projects.%s.%s", scientistsName, key), yamlFile)
 				if err != nil {
 					return Scientistsset{}, fmt.Errorf("find line in child for key %s: %w", scientistsName, err)
 				}
@@ -167,7 +167,7 @@ func readFeaturesetYAMLV2(yamlFile []byte) (Scientistsset, error) {
 		}
 
 		if keys.Default <= 0 {
-			line, err := findLineInChild("default", []string{"projects", scientistsName}, yamlFile)
+			line, err := findLineInChild(fmt.Sprintf("$.projects.%s.%s", scientistsName, "default"), yamlFile)
 			if err != nil {
 				return Scientistsset{}, fmt.Errorf("find line for default case in child for %s: %w", scientistsName, err)
 			}
@@ -204,14 +204,8 @@ func readFeaturesetYAMLV2(yamlFile []byte) (Scientistsset, error) {
 	return fs, nil
 }
 
-func findLineInChild(key string, rootKeys []string, yamlFile []byte) (int, error) {
-	rootTokens := lexer.Tokenize(string(yamlFile))
-	rootLine, err := findLineInTokens(rootKeys[0], rootTokens)
-	if err != nil {
-		return 0, fmt.Errorf("looking for root key %s: %w", rootKeys[0], err)
-	}
-
-	path, err := yaml.PathString(fmt.Sprintf("$.%s", strings.Join(rootKeys, ".")))
+func findLineInChild(pathToKey string, yamlFile []byte) (int, error) {
+	path, err := yaml.PathString(pathToKey)
 	if err != nil {
 		return 0, err
 	}
@@ -221,14 +215,64 @@ func findLineInChild(key string, rootKeys []string, yamlFile []byte) (int, error
 		return 0, err
 	}
 
-	tokens := lexer.Tokenize(node.String())
-
-	line, err := findLineInTokens(key, tokens)
-	if err != nil {
-		return 0, fmt.Errorf("lookign for key %s: %w", key, err)
+	// we need this small ugly part due to the fact that
+	// if `pathToKey` is reffered to the line which is an array or a map
+	// the node will start with the line below them
+	//. f.e. looking for $.b:
+	/*
+		b:
+		  l: 1
+	*/
+	// will give us a node `l: 1` and the line (2)
+	// so we need to add -1 to the line.
+	// it could be avoided with another approach which is currently can't be implemented
+	// due to the bug: https://github.com/goccy/go-yaml/issues/659
+	addLine := 0
+	switch node.Type() {
+	case ast.MappingType, ast.SequenceType:
+		addLine = -1
 	}
 
-	return rootLine + line + len(rootKeys) - 1, nil
+	return node.GetToken().Position.Line + addLine, nil
+
+	/* // APPROACH IF THIS BUG FIXED: https://github.com/goccy/go-yaml/issues/659
+	sumLine := 0
+	yml := string(yamlFile)
+	for ind, rootKey := range rootKeys {
+		fmt.Printf("YAML: \n%s", yml)
+
+		rootTokens := lexer.Tokenize(yml)
+		rootLine, err := findLineInTokens(rootKey, rootTokens)
+		if err != nil {
+			return 0, fmt.Errorf("looking for root key %s: %w", rootKeys[0], err)
+		}
+		sumLine += rootLine
+
+		path, err := yaml.PathString(fmt.Sprintf("$.%s", rootKey))
+		if err != nil {
+			return 0, fmt.Errorf("finding path: %w", err)
+		}
+
+		node, err := path.ReadNode(strings.NewReader(yml))
+		if err != nil {
+			return 0, fmt.Errorf("reading node: %w", err)
+		}
+
+		yml = node.String()
+		if ind != len(rootKeys)-1 {
+			continue
+		}
+
+		tokens := lexer.Tokenize(node.String())
+		line, err := findLineInTokens(key, tokens)
+		if err != nil {
+			return 0, fmt.Errorf("lookign for key %s: %w", key, err)
+		}
+		sumLine += line
+	}
+
+	return sumLine, nil
+	*/
 }
 
 func findLineInTokens(key string, tokens token.Tokens) (int, error) {
@@ -251,8 +295,6 @@ func findLine(pathToKey string, yamlContent []byte) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-
-	log.Printf("ast: %+v", ast.GetToken())
 
 	return ast.GetToken().Position.Line, nil
 }
