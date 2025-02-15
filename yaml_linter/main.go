@@ -13,11 +13,12 @@ import (
 
 func main() {
 	// example()
-	f()
-	return
-	scientists, err := readDefinitionFiles()
+	// f()
+	// return
+	scientists, err := readDefinitionFilesV2()
 	if err != nil {
 		slog.Error("error reading definition files", slog.Any("error", err))
+		return
 	}
 
 	slog.Info("Scientists", slog.Any("scientists", scientists))
@@ -101,8 +102,4 @@ func f() {
 		fmt.Printf("LINE: %v\n\n", token.Position.Line)
 	}
 	/**/
-
-	if false {
-		makeAnnotation()
-	}
 }

@@ -2,11 +2,9 @@ package main
 
 import (
 	"bytes"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io/fs"
-	"log"
 	"os"
 	"slices"
 
@@ -34,6 +32,8 @@ func readDefinitionFilesV2() (map[string]FileContent, error) {
 	return sets, nil
 }
 
+type FileContents map[string]FileContent
+
 type FileContent struct {
 	Scientistsset Scientistsset
 	Content       []byte
@@ -45,6 +45,7 @@ func readDefinitionsFromFSV2(defsFS fs.ReadDirFS) (map[string]FileContent, error
 		return nil, err
 	}
 
+	fileErrs := make([]FileError, 0)
 	scientistsets := make(map[string]FileContent, len(files))
 	for _, file := range files {
 		if file.IsDir() {
@@ -58,12 +59,29 @@ func readDefinitionsFromFSV2(defsFS fs.ReadDirFS) (map[string]FileContent, error
 
 		scientistset, err := readFeaturesetYAMLV2(content)
 		if err != nil {
+			var lintErrs *LintErrors
+			if errors.As(err, &lintErrs) {
+				fileErrs = append(fileErrs, FileError{
+					LintErrors: LintErrors{
+						Errors: lintErrs.Errors,
+					},
+					fileName: file.Name(),
+				})
+
+				continue
+			}
 			return nil, fmt.Errorf("read file %s: %w", file.Name(), err)
 		}
 
 		scientistsets[file.Name()] = FileContent{
 			Scientistsset: scientistset,
 			Content:       content,
+		}
+	}
+
+	if len(fileErrs) > 0 {
+		if err := makeAnnotations(fileErrs); err != nil {
+			return nil, fmt.Errorf("make annotations: %w", err)
 		}
 	}
 
@@ -298,46 +316,3 @@ func findLine(pathToKey string, yamlContent []byte) (int, error) {
 
 	return ast.GetToken().Position.Line, nil
 }
-
-func makeAnnotation() {
-	ann := annotation{
-		File:            "yaml_linter/definitions/test.yaml",
-		Line:            2,
-		Title:           "Test Annotation",
-		Message:         "It's a test annotation",
-		AnnotationLevel: "failure", // Can be one of: notice, warning, failure
-	}
-
-	anns := []annotation{ann}
-	body, err := json.Marshal(anns)
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-
-	err = os.WriteFile("./annotations.json", body, 0644)
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-}
-
-type annotation struct {
-	File            string `json:"file"`
-	Line            int    `json:"line"`
-	Title           string `json:"title"`
-	Message         string `json:"message"`
-	AnnotationLevel string `json:"annotation_level"`
-}
-
-/*
-[
-  {
-    file: "path/to/file.js",
-    line: 5,
-    title: "title for my annotation",
-    message: "my message",
-    annotation_level: "failure"
-  }
-]
-*/
