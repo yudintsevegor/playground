@@ -53,7 +53,8 @@ func readDefinitionsFromFSV2(defsFS fs.ReadDirFS) (map[string]FileContent, error
 			continue
 		}
 
-		content, err := os.ReadFile("definitions/" + file.Name())
+		fileName := "definitions/" + file.Name()
+		content, err := os.ReadFile(fileName)
 		if err != nil {
 			return nil, err
 		}
@@ -66,12 +67,12 @@ func readDefinitionsFromFSV2(defsFS fs.ReadDirFS) (map[string]FileContent, error
 					LintErrors: LintErrors{
 						Errors: lintErrs.Errors,
 					},
-					fileName: file.Name(),
+					fileName: fileName,
 				})
 
 				continue
 			}
-			return nil, fmt.Errorf("read file %s: %w", file.Name(), err)
+			return nil, fmt.Errorf("read file %s: %w", fileName, err)
 		}
 
 		scientistsets[file.Name()] = FileContent{
