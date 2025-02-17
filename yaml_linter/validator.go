@@ -12,20 +12,34 @@ var (
 	errOnlyOneProjectIsAllowed = errors.New("only one default project is allowed")
 )
 
+type FileErrors []FileError
+
+func (errs FileErrors) Error() string {
+	return "file errors" // TODO: implement
+}
+
 func (fcs *FileContents) Validate() error {
-	_, err := fcs.uniqueNames()
+	fileErrs := make([]FileError, 0)
+	uniqueNameErrs, err := fcs.uniqueNames()
 	if err != nil {
 		return fmt.Errorf("validating unique names: %w", err)
 	}
+	fileErrs = append(fileErrs, uniqueNameErrs...)
 
-	_, err = fcs.fileNameMatch()
+	matchErrs, err := fcs.fileNameMatch()
 	if err != nil {
 		return fmt.Errorf("validating names on matching with file name: %w", err)
 	}
+	fileErrs = append(fileErrs, matchErrs...)
 
-	_, err = fcs.projectOnlyOnce()
+	onePrjectErrs, err := fcs.projectOnlyOnce()
 	if err != nil {
 		return fmt.Errorf("validating only one project is allowed: %w", err)
+	}
+	fileErrs = append(fileErrs, onePrjectErrs...)
+
+	if len(fileErrs) > 0 {
+		return FileErrors(fileErrs)
 	}
 
 	return nil

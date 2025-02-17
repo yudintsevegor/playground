@@ -17,9 +17,19 @@ import (
 )
 
 func readDefinitionFilesV2() (map[string]FileContent, error) {
-	sets, err := readDefinitionsFromFSV2(DefinitionsFS)
+	sets, readerFileErrs, err := readDefinitionsFromFSV2(DefinitionsFS)
 	if err != nil {
 		return nil, fmt.Errorf("read featureset definitions from `DefinitionsFS`: %w", err)
+	}
+
+	if err := sets.Validate(); err != nil {
+		var fileErrs *FileErrors
+		if errors.As(err, &fileErrs) {
+			allErrs := append(readerFileErrs, *fileErrs...)
+			if err := makeAnnotations(allErrs); err != nil {
+				return nil, fmt.Errorf("make annotations: %w", err)
+			}
+		}
 	}
 
 	return sets, nil
@@ -32,10 +42,10 @@ type FileContent struct {
 	Content       []byte
 }
 
-func readDefinitionsFromFSV2(defsFS fs.ReadDirFS) (map[string]FileContent, error) {
+func readDefinitionsFromFSV2(defsFS fs.ReadDirFS) (FileContents, FileErrors, error) {
 	files, err := defsFS.ReadDir(".")
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	fileErrs := make([]FileError, 0)
@@ -48,7 +58,7 @@ func readDefinitionsFromFSV2(defsFS fs.ReadDirFS) (map[string]FileContent, error
 		fileName := "definitions/" + file.Name()
 		content, err := os.ReadFile(fileName)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 
 		scientistset, err := readFeaturesetYAMLV2(content)
@@ -64,7 +74,7 @@ func readDefinitionsFromFSV2(defsFS fs.ReadDirFS) (map[string]FileContent, error
 
 				continue
 			}
-			return nil, fmt.Errorf("read file %s: %w", fileName, err)
+			return nil, nil, fmt.Errorf("read file %s: %w", fileName, err)
 		}
 
 		scientistsets[file.Name()] = FileContent{
@@ -73,13 +83,7 @@ func readDefinitionsFromFSV2(defsFS fs.ReadDirFS) (map[string]FileContent, error
 		}
 	}
 
-	if len(fileErrs) > 0 {
-		if err := makeAnnotations(fileErrs); err != nil {
-			return nil, fmt.Errorf("make annotations: %w", err)
-		}
-	}
-
-	return scientistsets, nil
+	return scientistsets, fileErrs, nil
 }
 
 var (
