@@ -146,7 +146,7 @@ func readFeaturesetYAMLV2(yamlFile []byte) (Scientistsset, error) {
 		line, err := findLineInTokens("name", tokens)
 		if err != nil {
 			// return Scientistsset{}, fmt.Errorf("find line for key 'name': %w", err)
-			slog.Error("find line for key 'name'", slog.Any("error", err))
+			slog.Error("EXPECTED: find line for key 'name'", slog.Any("error", err))
 		}
 		// if name hasn't been provided --> return Line: 0 (?)
 

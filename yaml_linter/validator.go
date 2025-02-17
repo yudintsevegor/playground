@@ -15,7 +15,7 @@ var (
 type FileErrors []FileError
 
 func (errs FileErrors) Error() string {
-	return "file errors" // TODO: implement
+	return "KEK"
 }
 
 func (fcs *FileContents) Validate() error {
@@ -39,7 +39,8 @@ func (fcs *FileContents) Validate() error {
 	fileErrs = append(fileErrs, onePrjectErrs...)
 
 	if len(fileErrs) > 0 {
-		return FileErrors(fileErrs)
+		ferrs := FileErrors(fileErrs)
+		return &ferrs
 	}
 
 	return nil
@@ -64,7 +65,7 @@ func (fcs *FileContents) uniqueNames() ([]FileError, error) {
 				LintErrors: LintErrors{
 					Errors: []LintError{lintErr},
 				},
-				fileName: fileName,
+				fileName: "yaml_linter/definitions/" + fileName,
 			})
 
 			if !existingUniqeuName.marked {
@@ -83,7 +84,7 @@ func (fcs *FileContents) uniqueNames() ([]FileError, error) {
 					LintErrors: LintErrors{
 						Errors: []LintError{lintErr},
 					},
-					fileName: existingUniqeuName.fileName,
+					fileName: "yaml_linter/definitions/" + existingUniqeuName.fileName,
 				})
 
 				existingUniqeuName.marked = true
@@ -118,7 +119,7 @@ func (fcs *FileContents) fileNameMatch() ([]FileError, error) {
 			LintErrors: LintErrors{
 				Errors: []LintError{lintErr},
 			},
-			fileName: fileName,
+			fileName: "yaml_linter/definitions/" + fileName,
 		})
 	}
 
@@ -150,7 +151,7 @@ func (fcs *FileContents) projectOnlyOnce() ([]FileError, error) {
 					LintErrors: LintErrors{
 						Errors: []LintError{lintErr},
 					},
-					fileName: fileName,
+					fileName: "yaml_linter/definitions/" + fileName,
 				})
 
 				if !existing.marked {
@@ -170,7 +171,7 @@ func (fcs *FileContents) projectOnlyOnce() ([]FileError, error) {
 						LintErrors: LintErrors{
 							Errors: []LintError{lintErr},
 						},
-						fileName: existing.fileName,
+						fileName: "yaml_linter/definitions/" + existing.fileName,
 					})
 
 					existing.marked = true

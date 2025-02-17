@@ -15,13 +15,13 @@ func main() {
 	// example()
 	// f()
 	// return
-	scientists, err := readDefinitionFilesV2()
+	_, err := readDefinitionFilesV2()
 	if err != nil {
 		slog.Error("error reading definition files", slog.Any("error", err))
 		return
 	}
 
-	slog.Info("Scientists", slog.Any("scientists", scientists))
+	// slog.Info("Scientists", slog.Any("scientists", scientists))
 }
 
 func f() {
