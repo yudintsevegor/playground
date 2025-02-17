@@ -16,14 +16,6 @@ import (
 	"github.com/goccy/go-yaml/token"
 )
 
-/*
-	- unique names
-	- unique files_names
-	- name == file_name
-	- ignore .test.yaml files
-	- scientists could be duplicated, but project for each scientist should be present only once.
-*/
-
 func readDefinitionFilesV2() (map[string]FileContent, error) {
 	sets, err := readDefinitionsFromFSV2(DefinitionsFS)
 	if err != nil {
@@ -160,7 +152,7 @@ func readFeaturesetYAMLV2(yamlFile []byte) (Scientistsset, error) {
 	// Validate the file format
 	for scientistsName, keys := range defs.Projects {
 		if !slices.Contains(defs.Scientists, scientistsName) {
-			line, err := findLineInChild(fmt.Sprintf("$.projects.%s", scientistsName), yamlFile)
+			line, err := findLine(fmt.Sprintf("$.projects.%s", scientistsName), yamlFile)
 			if err != nil {
 				return Scientistsset{}, fmt.Errorf("find line in child for key %s: %w", scientistsName, err)
 			}
@@ -175,7 +167,7 @@ func readFeaturesetYAMLV2(yamlFile []byte) (Scientistsset, error) {
 
 		if len(keys.RemainingKeys) > 0 {
 			for key := range keys.RemainingKeys {
-				line, err := findLineInChild(fmt.Sprintf("$.projects.%s.%s", scientistsName, key), yamlFile)
+				line, err := findLine(fmt.Sprintf("$.projects.%s.%s", scientistsName, key), yamlFile)
 				if err != nil {
 					return Scientistsset{}, fmt.Errorf("find line in child for key %s: %w", scientistsName, err)
 				}
@@ -188,7 +180,7 @@ func readFeaturesetYAMLV2(yamlFile []byte) (Scientistsset, error) {
 		}
 
 		if keys.Default <= 0 {
-			line, err := findLineInChild(fmt.Sprintf("$.projects.%s.%s", scientistsName, "default"), yamlFile)
+			line, err := findLine(fmt.Sprintf("$.projects.%s.%s", scientistsName, "default"), yamlFile)
 			if err != nil {
 				return Scientistsset{}, fmt.Errorf("find line for default case in child for %s: %w", scientistsName, err)
 			}
@@ -212,7 +204,7 @@ func readFeaturesetYAMLV2(yamlFile []byte) (Scientistsset, error) {
 
 		ageCfg, hasAge := defs.Projects[scientistName]
 		if hasAge {
-			scientist.defaultAge = ageCfg.Default
+			scientist.defaultProjects = &ageCfg.Default
 		}
 
 		fs.Scientitsts = append(fs.Scientitsts, scientist)
@@ -226,36 +218,6 @@ func readFeaturesetYAMLV2(yamlFile []byte) (Scientistsset, error) {
 }
 
 func findLineInChild(pathToKey string, yamlFile []byte) (int, error) {
-	path, err := yaml.PathString(pathToKey)
-	if err != nil {
-		return 0, err
-	}
-
-	node, err := path.ReadNode(bytes.NewReader(yamlFile))
-	if err != nil {
-		return 0, err
-	}
-
-	// we need this small ugly part due to the fact that
-	// if `pathToKey` is reffered to the line which is an array or a map
-	// the node will start with the line below them
-	//. f.e. looking for $.b:
-	/*
-		b:
-		  l: 1
-	*/
-	// will give us a node `l: 1` and the line (2)
-	// so we need to add -1 to the line.
-	// it could be avoided with another approach which is currently can't be implemented
-	// due to the bug: https://github.com/goccy/go-yaml/issues/659
-	addLine := 0
-	switch node.Type() {
-	case ast.MappingType, ast.SequenceType:
-		addLine = -1
-	}
-
-	return node.GetToken().Position.Line + addLine, nil
-
 	/* // APPROACH IF THIS BUG FIXED: https://github.com/goccy/go-yaml/issues/659
 	sumLine := 0
 	yml := string(yamlFile)
@@ -294,6 +256,7 @@ func findLineInChild(pathToKey string, yamlFile []byte) (int, error) {
 
 	return sumLine, nil
 	*/
+	return 0, nil
 }
 
 func findLineInTokens(key string, tokens token.Tokens) (int, error) {
@@ -312,10 +275,28 @@ func findLine(pathToKey string, yamlContent []byte) (int, error) {
 		return 0, err
 	}
 
-	ast, err := path.ReadNode(bytes.NewReader(yamlContent))
+	node, err := path.ReadNode(bytes.NewReader(yamlContent))
 	if err != nil {
 		return 0, err
 	}
 
-	return ast.GetToken().Position.Line, nil
+	// we need this small ugly part due to the fact that
+	// if `pathToKey` is reffered to the line which is an array or a map
+	// the node will start with the line below them
+	//. f.e. looking for $.b:
+	/*
+		b:
+		  l: 1
+	*/
+	// will give us a node `l: 1` and the line (2)
+	// so we need to add -1 to the line.
+	// it could be avoided with another approach which is currently can't be implemented
+	// due to the bug: https://github.com/goccy/go-yaml/issues/659
+	addLine := 0
+	switch node.Type() {
+	case ast.MappingType, ast.SequenceType:
+		addLine = -1
+	}
+
+	return node.GetToken().Position.Line + addLine, nil
 }

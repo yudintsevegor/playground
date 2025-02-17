@@ -34,8 +34,8 @@ type Scientistsset struct {
 }
 
 type Scientitst struct {
-	Name       string
-	defaultAge int
+	Name            string
+	defaultProjects *int
 }
 
 var DefinitionsFS fs.ReadDirFS = definitions.EmbedFS
@@ -134,7 +134,7 @@ func readFeaturesetYAML(r io.Reader) (Scientistsset, error) {
 
 		ageCfg, hasAge := defs.Projects[scientistName]
 		if hasAge {
-			scientist.defaultAge = ageCfg.Default
+			scientist.defaultProjects = &ageCfg.Default
 		}
 
 		fs.Scientitsts = append(fs.Scientitsts, scientist)

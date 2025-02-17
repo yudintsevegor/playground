@@ -81,7 +81,7 @@ projects:
 `
 )
 
-func Test_Name(t *testing.T) {
+func Test_readFeaturesetYAMLV2(t *testing.T) {
 	tests := []struct {
 		name     string
 		content  string
