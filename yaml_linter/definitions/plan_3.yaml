@@ -8,6 +8,6 @@ scientists:
 
 projects:
   feynamn:
-    default: 0
-  curie:
-    default: 0
+    default: 1
+  #curie:
+  # default: 1
