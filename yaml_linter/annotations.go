@@ -23,7 +23,7 @@ func makeAnnotations(fileErrs []FileError) error {
 	for _, fileErr := range fileErrs {
 		for _, lintErr := range fileErr.Errors {
 			anns = append(anns, annotation{
-				File:            fileErr.fileName,
+				File:            "yaml_linter/definitions/" + fileErr.fileName,
 				Line:            lintErr.Line,
 				Title:           "Lint Error",
 				Message:         lintErr.Error(),

@@ -69,7 +69,7 @@ func readDefinitionsFromFSV2(defsFS fs.ReadDirFS) (FileContents, FileErrors, err
 					LintErrors: LintErrors{
 						Errors: lintErrs.Errors,
 					},
-					fileName: "yaml_linter/" + fileName,
+					fileName: file.Name(),
 				})
 
 				continue

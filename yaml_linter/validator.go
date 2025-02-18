@@ -65,7 +65,7 @@ func (fcs *FileContents) uniqueNames() ([]FileError, error) {
 				LintErrors: LintErrors{
 					Errors: []LintError{lintErr},
 				},
-				fileName: "yaml_linter/definitions/" + fileName,
+				fileName: fileName,
 			})
 
 			if !existingUniqeuName.marked {
@@ -84,7 +84,7 @@ func (fcs *FileContents) uniqueNames() ([]FileError, error) {
 					LintErrors: LintErrors{
 						Errors: []LintError{lintErr},
 					},
-					fileName: "yaml_linter/definitions/" + existingUniqeuName.fileName,
+					fileName: existingUniqeuName.fileName,
 				})
 
 				existingUniqeuName.marked = true
@@ -119,7 +119,7 @@ func (fcs *FileContents) fileNameMatch() ([]FileError, error) {
 			LintErrors: LintErrors{
 				Errors: []LintError{lintErr},
 			},
-			fileName: "yaml_linter/definitions/" + fileName,
+			fileName: fileName,
 		})
 	}
 
@@ -151,7 +151,7 @@ func (fcs *FileContents) projectOnlyOnce() ([]FileError, error) {
 					LintErrors: LintErrors{
 						Errors: []LintError{lintErr},
 					},
-					fileName: "yaml_linter/definitions/" + fileName,
+					fileName: fileName,
 				})
 
 				if !existing.marked {
@@ -171,7 +171,7 @@ func (fcs *FileContents) projectOnlyOnce() ([]FileError, error) {
 						LintErrors: LintErrors{
 							Errors: []LintError{lintErr},
 						},
-						fileName: "yaml_linter/definitions/" + existing.fileName,
+						fileName: existing.fileName,
 					})
 
 					existing.marked = true
