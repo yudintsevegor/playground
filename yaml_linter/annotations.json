@@ -1,0 +1,86 @@
+[
+    {
+        "file": "yaml_linter/definitionstest.yaml",
+        "line": 1,
+        "title": "Lint Error",
+        "message": "unexpected key a in definitaion",
+        "annotation_level": "failure"
+    },
+    {
+        "file": "yaml_linter/definitionstest.yaml",
+        "line": 6,
+        "title": "Lint Error",
+        "message": "unexpected key b in definitaion",
+        "annotation_level": "failure"
+    },
+    {
+        "file": "yaml_linter/definitionstest.yaml",
+        "line": 8,
+        "title": "Lint Error",
+        "message": "unexpected key c in definitaion",
+        "annotation_level": "failure"
+    },
+    {
+        "file": "yaml_linter/definitionstest.yaml",
+        "line": 0,
+        "title": "Lint Error",
+        "message": "featureset name must be set",
+        "annotation_level": "failure"
+    },
+    {
+        "file": "yaml_linter/definitionsplan_3.yaml",
+        "line": 2,
+        "title": "Lint Error",
+        "message": "the name should be unuque",
+        "annotation_level": "failure"
+    },
+    {
+        "file": "yaml_linter/definitionsplan_2.yaml",
+        "line": 2,
+        "title": "Lint Error",
+        "message": "the name should be unuque",
+        "annotation_level": "failure"
+    },
+    {
+        "file": "yaml_linter/definitionsplan_3.yaml",
+        "line": 2,
+        "title": "Lint Error",
+        "message": "the name should be the same as the file name",
+        "annotation_level": "failure"
+    },
+    {
+        "file": "yaml_linter/definitionsplan_1.yaml",
+        "line": 2,
+        "title": "Lint Error",
+        "message": "the name should be the same as the file name",
+        "annotation_level": "failure"
+    },
+    {
+        "file": "yaml_linter/definitionsplan_2.yaml",
+        "line": 2,
+        "title": "Lint Error",
+        "message": "the name should be the same as the file name",
+        "annotation_level": "failure"
+    },
+    {
+        "file": "yaml_linter/definitionsplan_1.yaml",
+        "line": 11,
+        "title": "Lint Error",
+        "message": "only one default project is allowed",
+        "annotation_level": "failure"
+    },
+    {
+        "file": "yaml_linter/definitionsplan_3.yaml",
+        "line": 10,
+        "title": "Lint Error",
+        "message": "only one default project is allowed",
+        "annotation_level": "failure"
+    },
+    {
+        "file": "yaml_linter/definitionsplan_2.yaml",
+        "line": 10,
+        "title": "Lint Error",
+        "message": "only one default project is allowed",
+        "annotation_level": "failure"
+    }
+]

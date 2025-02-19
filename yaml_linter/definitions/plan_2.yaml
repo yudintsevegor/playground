@@ -1,0 +1,11 @@
+type: scientistsset
+name: physics_plan
+
+scientists:
+  - newton
+  - feynamn
+  - maxwell
+
+projects:
+  feynamn:
+    default: 5

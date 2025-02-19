@@ -1,0 +1,34 @@
+name: yaml_linter
+on:
+  push:
+    branches:
+      - main
+  pull_request: {}
+
+permissions:
+  checks: write
+
+jobs:
+  lint:
+    name: Lint YAML files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          sparse-checkout: |
+            yaml_linter
+      - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5.3.0
+        with:
+          go-version-file: "./yaml_linter/go.mod"
+          cache: false
+      - run: |
+          cd yaml_linter &&
+            go run . && 
+            mv annotations.json ../annotations.json
+      - name: Annotate
+        uses: yuzutech/annotations-action@v0.4.0
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          title: "lint"
+          input: "./annotations.json"
+          ignore-missing-file: false

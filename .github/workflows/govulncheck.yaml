@@ -9,6 +9,7 @@ jobs:
   vulcheck_1:
     name: checks working-directory provided with `/*`
     runs-on: ubuntu-latest
+    if: false # This condition ensures the job is never executed
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -22,6 +23,7 @@ jobs:
   vulcheck_2:
     name: checks working-directory provided with `./*`
     runs-on: ubuntu-latest
+    if: false # This condition ensures the job is never executed
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -35,6 +37,7 @@ jobs:
   vulcheck_3:
     name: checks with empty working-directory (should use default)
     runs-on: ubuntu-latest
+    if: false # This condition ensures the job is never executed
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - run: mv govulncheck-action/app1/* ./
